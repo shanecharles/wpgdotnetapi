@@ -83,7 +83,9 @@ module Eventbrite =
       httpClient.DefaultRequestHeaders.Authorization <- new Headers.AuthenticationHeaderValue("Bearer", "EB_AUTH_TOKEN" |> Env.getVar)
       let! resp = httpClient.GetAsync("https://www.eventbriteapi.com/v3/users/me/owned_events/?order_by=start_desc&expand=venue")
                     |> Async.AwaitTask
-      let! contents = resp.Content.ReadAsStringAsync () |> Async.AwaitTask 
+      let! contents = resp.Content.ReadAsStringAsync () |> Async.AwaitTask
+      return! OK contents ctx
+      (*
       httpClient.DefaultRequestHeaders.Authorization <- null
       let published = EbEventsJson.Parse(contents).Events |> Array.filter onlyPublished |> Array.map createEvent
       let lastEvent = published |> Array.head |> eventDate
@@ -97,4 +99,5 @@ module Eventbrite =
       let config = EventsJson.Config(isSummer = isSummer, isWinter = isWinter)
 
       return! EventsJson.Root(config, published) |> jsonStr |> flip OK ctx
+      *)
     }
